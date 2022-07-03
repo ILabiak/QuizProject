@@ -13,7 +13,8 @@ const { Pool } = require("pg");
     database: process.env.DATABASE,
   });
   await pool.connect();
-  console.dir(await addImageToDB(pool, 'usrdfsd'));
+  console.dir(await deleteImageFromDB(pool, 4));
+  // console.dir(await addImageToDB(pool, 'dfsfs'));
 
   await pool.end();
 })();
@@ -30,7 +31,7 @@ const getUserPasswordHash = async (pool, username) => {
 const addUserToDB = async (pool, username, passhash, email) => {
   //need to generate password hash before calling this function
   try {
-    const res = await pool.query(
+    await pool.query(
       "INSERT INTO quizschema.users (username, passhash, email) VALUES ($1, $2, $3)",
       [username, passhash, email]
     );
@@ -55,15 +56,28 @@ const getImageUrl = async (pool, imageId) => {
 
 const addImageToDB = async (pool, imageUrl) => {
   try {
-    const res = await pool.query(
-      "INSERT INTO quizschema.images (imageurl) VALUES ($1)",
-      [imageUrl]
-    );
+    await pool.query("INSERT INTO quizschema.images (imageurl) VALUES ($1)", [
+      imageUrl,
+    ]);
     return 1;
   } catch (err) {
     const res = await pool.query(
       "SELECT setval(pg_get_serial_sequence('quizschema.images', 'id'), (SELECT MAX(id) FROM quizschema.images))"
     );
+    return parseInt(err.code);
+  }
+};
+
+const deleteImageFromDB = async (pool, imageId) => {
+  try {
+    const res = await pool.query(
+      "DELETE FROM quizschema.images WHERE id = $1",
+      [imageId]
+    );
+    if (res.rowCount == 1) return 1;
+    return 0;
+  } catch (err) {
+    // console.log(err);
     return parseInt(err.code);
   }
 };
