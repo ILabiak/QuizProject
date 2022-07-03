@@ -13,7 +13,7 @@ const { Pool } = require("pg");
     database: process.env.DATABASE,
   });
   await pool.connect();
-  console.dir(await addUserToDB(pool, "testuser1", "testhash"));
+  console.dir(await addUserToDB(pool, "testuser122", "testhash"));
 
   await pool.end();
 })();
@@ -36,6 +36,10 @@ const addUserToDB = async (pool, username, passhash) => {
     );
     return 1;
   } catch (err) {
+    //reset sequense next value if error
+    const res = await pool.query(
+      "SELECT setval(pg_get_serial_sequence('quizschema.users', 'id'), (SELECT MAX(id) FROM quizschema.users)) "
+    );
     return parseInt(err.code);
   }
 };
