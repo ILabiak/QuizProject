@@ -38,12 +38,12 @@ const addUserToDB = async (pool, username, passhash) => {
   } catch (err) {
     //reset sequense next value if error
     const res = await pool.query(
-      "SELECT setval(pg_get_serial_sequence('quizschema.users', 'id'), (SELECT MAX(id) FROM quizschema.users)) "
+      "SELECT setval(pg_get_serial_sequence('quizschema.users', 'id'), (SELECT MAX(id) FROM quizschema.users))"
     );
     return parseInt(err.code);
   }
 };
 
-//hash generating and comparing password with hash
+// hash generating and comparing password with hash
 // const hash = bcrypt.hashSync("testpass", 10);
 // console.log(bcrypt.compareSync("testpasss", "$2b$10$pN54rjnyI8S7Sxsa78cyGO76z/0ngWWQT4pNPVF.DXqfjXDQRMhT."))
