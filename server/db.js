@@ -13,7 +13,7 @@ const { Pool } = require("pg");
     database: process.env.DATABASE,
   });
   await pool.connect();
-  console.dir(await getImageUrl(pool, 2));
+  console.dir(await addImageToDB(pool, 'usrdfsd'));
 
   await pool.end();
 })();
@@ -51,6 +51,21 @@ const getImageUrl = async (pool, imageId) => {
   );
   if (res.rows[0]) return res.rows[0].imageurl;
   return;
+};
+
+const addImageToDB = async (pool, imageUrl) => {
+  try {
+    const res = await pool.query(
+      "INSERT INTO quizschema.images (imageurl) VALUES ($1)",
+      [imageUrl]
+    );
+    return 1;
+  } catch (err) {
+    const res = await pool.query(
+      "SELECT setval(pg_get_serial_sequence('quizschema.images', 'id'), (SELECT MAX(id) FROM quizschema.images))"
+    );
+    return parseInt(err.code);
+  }
 };
 
 // hash generating and comparing password with hash
