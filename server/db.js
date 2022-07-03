@@ -13,7 +13,7 @@ const { Pool } = require("pg");
     database: process.env.DATABASE,
   });
   await pool.connect();
-  console.dir(await addUserToDB(pool, "testuser123", "testhash", "email@email.com"));
+  console.dir(await getImageUrl(pool, 2));
 
   await pool.end();
 })();
@@ -42,6 +42,15 @@ const addUserToDB = async (pool, username, passhash, email) => {
     );
     return parseInt(err.code);
   }
+};
+
+const getImageUrl = async (pool, imageId) => {
+  const res = await pool.query(
+    "SELECT imageurl FROM quizschema.images WHERE id = $1",
+    [imageId]
+  );
+  if (res.rows[0]) return res.rows[0].imageurl;
+  return;
 };
 
 // hash generating and comparing password with hash
