@@ -13,7 +13,7 @@ const { Pool } = require("pg");
     database: process.env.DATABASE,
   });
   await pool.connect();
-  console.dir(await addUserToDB(pool, "testuser122", "testhash"));
+  console.dir(await addUserToDB(pool, "testuser123", "testhash", "email@email.com"));
 
   await pool.end();
 })();
@@ -27,12 +27,12 @@ const getUserPasswordHash = async (pool, username) => {
   return;
 };
 
-const addUserToDB = async (pool, username, passhash) => {
+const addUserToDB = async (pool, username, passhash, email) => {
   //need to generate password hash before calling this function
   try {
     const res = await pool.query(
-      "INSERT INTO quizschema.users (username, passhash) VALUES ($1, $2)",
-      [username, passhash]
+      "INSERT INTO quizschema.users (username, passhash, email) VALUES ($1, $2, $3)",
+      [username, passhash, email]
     );
     return 1;
   } catch (err) {
