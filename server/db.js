@@ -14,7 +14,7 @@ const moment = require("moment");
     database: process.env.DATABASE,
   });
   await pool.connect();
-  console.dir(await addQuestionToDB(pool, 5, "question", 1));
+  console.dir(await deleteQuestionFromDB(pool, 4));
   // console.dir(await addImageToDB(pool, 'dfsfs'));
 
   await pool.end();
@@ -140,6 +140,41 @@ const addQuestionToDB = async (pool, quizId, text, imageId) => {
       [quizId, text, imageId, timestampDate]
     );
     return 1;
+  } catch (err) {
+    return parseInt(err.code);
+  }
+};
+
+const updateQuestionInDB = async (
+  pool,
+  questionId,
+  text,
+  imageId,
+  isActive
+) => {
+  const timestampDate = moment().format("YYYY-MM-DD HH:mm:ss Z");
+  try {
+    const res = await pool.query(
+      `UPDATE quizschema.questions
+      SET text = COALESCE($1, text), image = COALESCE($2, image), active = COALESCE($3, active)::boolean, "updatedAt"=$4
+	WHERE id = $5`,
+      [text, imageId, isActive, timestampDate, questionId]
+    );
+    if (res.rowCount == 1) return 1;
+    return 0;
+  } catch (err) {
+    return parseInt(err.code);
+  }
+};
+
+const deleteQuestionFromDB = async (pool, questionId) => {
+  try {
+    const res = await pool.query(
+      "DELETE FROM quizschema.questions WHERE id = $1",
+      [questionId]
+    );
+    if (res.rowCount == 1) return 1;
+    return 0;
   } catch (err) {
     return parseInt(err.code);
   }
