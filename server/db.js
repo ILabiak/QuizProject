@@ -3,6 +3,7 @@
 require("dotenv").config({ path: __dirname + "/configdata.env" });
 const bcrypt = require("bcrypt");
 const { Pool } = require("pg");
+const moment = require("moment");
 
 (async () => {
   const pool = new Pool({
@@ -13,7 +14,7 @@ const { Pool } = require("pg");
     database: process.env.DATABASE,
   });
   await pool.connect();
-  console.dir(await deleteImageFromDB(pool, 4));
+  console.dir(await addQuizToDB(pool, 1, 'test1', 'desc', 4));
   // console.dir(await addImageToDB(pool, 'dfsfs'));
 
   await pool.end();
@@ -55,7 +56,7 @@ const getImageUrl = async (pool, imageId) => {
 };
 
 const addImageToDB = async (pool, imageUrl) => {
-  try {
+  try {v
     await pool.query("INSERT INTO quizschema.images (imageurl) VALUES ($1)", [
       imageUrl,
     ]);
@@ -81,6 +82,20 @@ const deleteImageFromDB = async (pool, imageId) => {
     return parseInt(err.code);
   }
 };
+
+const addQuizToDB = async (pool, userId, title, description, imageId) => {
+  const timestampDate = moment().format('YYYY-MM-DD HH:mm:ss Z') //get timestamp with timezone using moment.js
+  try {
+    await pool.query(
+      "INSERT INTO quizschema.quizzes (owner, title, description, image, \"createdAt\") VALUES ($1, $2, NULLIF($3,''), NULLIF($4,'')::bigint, $5)",
+      [userId, title, description, imageId, timestampDate]
+    );
+    return 1;
+  } catch (err) {
+    return parseInt(err.code);
+  }
+}
+
 
 // hash generating and comparing password with hash
 // const hash = bcrypt.hashSync("testpass", 10);
