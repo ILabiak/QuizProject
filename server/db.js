@@ -14,7 +14,7 @@ const moment = require("moment");
     database: process.env.DATABASE,
   });
   await pool.connect();
-  console.dir(await deleteQuizFromDB(pool, 7));
+  console.dir(await updateQuizInDB(pool, 6, null, "sdff", 6));
   // console.dir(await addImageToDB(pool, 'dfsfs'));
 
   await pool.end();
@@ -56,7 +56,8 @@ const getImageUrl = async (pool, imageId) => {
 };
 
 const addImageToDB = async (pool, imageUrl) => {
-  try {v
+  try {
+    v;
     await pool.query("INSERT INTO quizschema.images (imageurl) VALUES ($1)", [
       imageUrl,
     ]);
@@ -84,7 +85,7 @@ const deleteImageFromDB = async (pool, imageId) => {
 };
 
 const addQuizToDB = async (pool, userId, title, description, imageId) => {
-  const timestampDate = moment().format('YYYY-MM-DD HH:mm:ss Z') //get timestamp with timezone using moment.js
+  const timestampDate = moment().format("YYYY-MM-DD HH:mm:ss Z"); //get timestamp with timezone using moment.js
   try {
     await pool.query(
       "INSERT INTO quizschema.quizzes (owner, title, description, image, \"createdAt\") VALUES ($1, $2, NULLIF($3,''), NULLIF($4,'')::bigint, $5)",
@@ -94,7 +95,7 @@ const addQuizToDB = async (pool, userId, title, description, imageId) => {
   } catch (err) {
     return parseInt(err.code);
   }
-}
+};
 
 const deleteQuizFromDB = async (pool, quizId) => {
   try {
@@ -109,6 +110,21 @@ const deleteQuizFromDB = async (pool, quizId) => {
   }
 };
 
+const updateQuizInDB = async (pool, quizId, title, description, image) => {
+  const timestampDate = moment().format("YYYY-MM-DD HH:mm:ss Z");
+  try {
+    const res = await pool.query(
+      `UPDATE quizschema.quizzes
+      SET title = COALESCE($1, title), description = COALESCE($2, description), image = COALESCE($3, image)::bigint, "updatedAt"=$4
+	WHERE id = $5`,
+      [title, description, image, timestampDate, quizId]
+    );
+    if (res.rowCount == 1) return 1;
+    return 0;
+  } catch (err) {
+    return parseInt(err.code);
+  }
+};
 
 // hash generating and comparing password with hash
 // const hash = bcrypt.hashSync("testpass", 10);
