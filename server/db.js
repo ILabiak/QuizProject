@@ -14,7 +14,7 @@ const moment = require("moment");
     database: process.env.DATABASE,
   });
   await pool.connect();
-  console.dir(await updateQuizInDB(pool, 6, null, "sdff", 6));
+  console.dir(await getQuiz(pool, 5));
   // console.dir(await addImageToDB(pool, 'dfsfs'));
 
   await pool.end();
@@ -124,6 +124,15 @@ const updateQuizInDB = async (pool, quizId, title, description, image) => {
   } catch (err) {
     return parseInt(err.code);
   }
+};
+
+const getQuiz = async (pool, quizId) => {
+  const res = await pool.query(
+    "SELECT * FROM quizschema.quizzes WHERE id = $1",
+    [quizId]
+  );
+  if (res.rows[0]) return res.rows[0];
+  return;
 };
 
 // hash generating and comparing password with hash
