@@ -14,7 +14,7 @@ const moment = require("moment");
     database: process.env.DATABASE,
   });
   await pool.connect();
-  console.dir(await addQuizToDB(pool, 1, 'test1', 'desc', 4));
+  console.dir(await deleteQuizFromDB(pool, 7));
   // console.dir(await addImageToDB(pool, 'dfsfs'));
 
   await pool.end();
@@ -95,6 +95,19 @@ const addQuizToDB = async (pool, userId, title, description, imageId) => {
     return parseInt(err.code);
   }
 }
+
+const deleteQuizFromDB = async (pool, quizId) => {
+  try {
+    const res = await pool.query(
+      "DELETE FROM quizschema.quizzes WHERE id = $1",
+      [quizId]
+    );
+    if (res.rowCount == 1) return 1;
+    return 0;
+  } catch (err) {
+    return parseInt(err.code);
+  }
+};
 
 
 // hash generating and comparing password with hash
