@@ -4,4 +4,4 @@ iOS, web, and telegram quiz application
 
 # Database Diagram
 
-![diagram](https://ibb.co/QKzc2Dc)
+![diagram](https://i.ibb.co/2km6DZ6/Quiz-Database-1.png)
