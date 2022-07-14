@@ -56,7 +56,7 @@ module.exports = {
       .then((question) => {
         if (!question) {
           return res.status(400).send({
-            message: "User Not Found",
+            message: "Question Not Found",
           });
         }
         return question
