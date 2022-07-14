@@ -5,6 +5,7 @@ const UserController = require("../controllers").users;
 const ImageController = require("../controllers").images;
 const QuestionController = require("../controllers").questions;
 const QuestionAnswerController = require("../controllers").questionAnswers;
+const QuizController = require("../controllers").quizzes;
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -39,7 +40,13 @@ router.post("/api/questionanswers", QuestionAnswerController.add);
 router.put('/api/questionanswers/:id', QuestionAnswerController.update);
 router.delete('/api/questionanswers/:id', QuestionAnswerController.delete);
 
+/* Quizzes Router */
+router.get("/api/quizzes", QuizController.list);
+router.get("/api/quizzes/:id", QuizController.getById);
+router.post("/api/quizzes", QuizController.add);
+router.put('/api/quizzes/:id', QuizController.update);
+router.delete('/api/quizzes/:id', QuizController.delete);
 
-// router.get('/api/users/:id', classroomController.getById);
+
 
 module.exports = router;
