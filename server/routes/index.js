@@ -6,6 +6,7 @@ const ImageController = require("../controllers").images;
 const QuestionController = require("../controllers").questions;
 const QuestionAnswerController = require("../controllers").questionAnswers;
 const QuizController = require("../controllers").quizzes;
+const QuizResultController = require("../controllers").quizResults;
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -46,6 +47,13 @@ router.get("/api/quizzes/:id", QuizController.getById);
 router.post("/api/quizzes", QuizController.add);
 router.put('/api/quizzes/:id', QuizController.update);
 router.delete('/api/quizzes/:id', QuizController.delete);
+
+/* QuizResults Router */
+router.get("/api/quizresults", QuizResultController.list);
+router.get("/api/quizresults/:id", QuizResultController.getById);
+router.post("/api/quizresults", QuizResultController.add);
+router.put('/api/quizresults/:id', QuizResultController.update);
+router.delete('/api/quizresults/:id', QuizResultController.delete);
 
 
 
