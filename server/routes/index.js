@@ -3,6 +3,7 @@ const router = express.Router();
 
 const UserController = require("../controllers").users;
 const ImageController = require("../controllers").images;
+const QuestionController = require("../controllers").questions;
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -22,6 +23,13 @@ router.get("/api/images/:id", ImageController.getById);
 router.post("/api/images", ImageController.add);
 router.put('/api/images/:id', ImageController.update);
 router.delete('/api/images/:id', ImageController.delete);
+
+/* Questions Router */
+router.get("/api/questions", QuestionController.list);
+router.get("/api/questions/:id", QuestionController.getById);
+router.post("/api/questions", QuestionController.add);
+router.put('/api/questions/:id', QuestionController.update);
+router.delete('/api/questions/:id', QuestionController.delete);
 
 
 // router.get('/api/users/:id', classroomController.getById);
